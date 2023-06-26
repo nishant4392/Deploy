@@ -1,13 +1,17 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const Second = () => {
-  return (
-    <div>
-      Hello from second page 
-      <Link to="/">go back</Link>
-    </div>
-  )
+    const navigate = useNavigate();
+    const clicker = () => {
+        navigate("/");
+    }
+    return (
+        <div>
+            Hello from second page
+            <button onClick={clicker}>go back</button>
+        </div>
+    )
 }
 
 export default Second
