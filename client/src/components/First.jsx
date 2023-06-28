@@ -4,7 +4,7 @@ const First = () => {
   const [user,setUser] = useState();
   const [show,setShow]= useState(false)
   const getData = async(req,res)=>{
-    let data = await fetch("http://localhost:5000/",{
+    let data = await fetch("https://deploy-practice.onrender.com/",{
       method:"get"
     });
     data = await data.json();
