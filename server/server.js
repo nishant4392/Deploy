@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", async (req, res) => {
-  res.send("The app is listening to posrt 5000");
+  res.send("The app is listening to port 5000");
 });
 
 app.use("/api/user",UserRoutes);

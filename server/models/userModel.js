@@ -30,43 +30,7 @@ const userModel = mongoose.Schema({
         type:String,
         trim:true,
         unique:true
-    },
-    privateBooks:[{
-        book: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Book",
-          required: true,
-        },
-        rating: {
-          type: Number,
-          min: 1,
-          max: 5,
-          default: 1,
-        },
-        status: {
-          type: String,
-          enum: ["unread", "reading", "finished"],
-          default: "unread",
-        },
-      }],
-      publicBooks:[{
-        book: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Book",
-          required: true,
-        },
-        rating: {
-          type: Number,
-          min: 1,
-          max: 5,
-          default: 1,
-        },
-        status: {
-          type: String,
-          enum: ["wishlist", "reading", "finished","dropped"],
-          default: "wishlist",
-        },
-      }]
+    }
 });
 
 
