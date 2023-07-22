@@ -11,6 +11,16 @@ const bookModel = mongoose.Schema({
         trim:true,
         required:true,
     },
+    cover:{
+        type:String,
+        trim:true,
+        default:"https://tse4.mm.bing.net/th?id=OIP.wb0zXdeKUoqD3nfvSVN6VgAAAA&pid=Api&P=0&h=220"
+    },
+    prologue:{
+        type:String,
+        trim:true,
+        default:"No prologue availaible."
+    },
     asin:{
         type:String,
         trim:true,
