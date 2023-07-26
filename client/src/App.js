@@ -1,15 +1,16 @@
 import './App.css';
-import First from './components/First';
-import Second from './components/Second';
 import { Routes,Route} from 'react-router-dom';
+import Button from '@mui/material/Button';
+
 
 
 function App() {
   return (
     <div className="App">
+    <Button variant="text">Text</Button>
+
     <Routes>
-    <Route path='/second' element={<Second/>}/>
-    <Route path='/' element={<First/>}/>
+    <Route path='/' element={<div>hello</div>}/>
     </Routes>
     </div>
   );

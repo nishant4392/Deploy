@@ -6,7 +6,7 @@ const {protect} = require("../middlewares/authToken");
 
 const router = express.Router();
 
-router.route("/register").post(checkSchema(registrationSchema),registerUser);
+router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 router.route("/send-mail").post(sendVerifyOtp);
 router.route("/verify-mail").post(verifyMail);

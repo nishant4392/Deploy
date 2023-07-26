@@ -3,6 +3,7 @@ const { validationResult } = require("express-validator");
 const { mailer } = require("../utils/nodemailer");
 const { verifyPassword } = require("../utils/matchPassword");
 const {generateToken} = require("../utils/generateJwt");
+const {checkSchema} = require('express-validator');
 
 const registrationSchema = {
     userName: {
@@ -57,7 +58,9 @@ const registrationSchema = {
 };
 
 // register new user after the validation check require {name,email,password,username}
-const registerUser = async (req, res) => {
+const registerUser = [
+    checkSchema(registrationSchema),
+    async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -81,7 +84,7 @@ const registerUser = async (req, res) => {
             sysError: error,
         });
     }
-};
+}]
 
 // this api is to be run after saving the user to verify their mail require {userId}
 const sendVerifyOtp = async (req, res) => {
@@ -261,7 +264,6 @@ const fx = (req,res)=>{
 
 module.exports = {
     registerUser,
-    registrationSchema,
     sendVerifyOtp,
     verifyMail,
     sendForgetPassOtp,

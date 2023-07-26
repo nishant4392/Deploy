@@ -3,6 +3,7 @@ const cors = require("cors");
 
 const {connectDb} = require("./config/connectDb");
 const UserRoutes  = require("./routes/userRoutes");
+const bookRoutes  = require("./routes/bookRoutes");
 
 
 require("dotenv").config();
@@ -19,5 +20,5 @@ app.get("/", async (req, res) => {
 });
 
 app.use("/api/user",UserRoutes);
-
+app.use("/api/book",bookRoutes)
 app.listen(5000);
