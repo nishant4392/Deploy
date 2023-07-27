@@ -11,7 +11,7 @@ function App() {
     <Login/>
     <Register/>
     <Routes>
-    <Route path='/' element={<div>hello</div>}/>
+    <Route path='/' element={<div className='text-3xl font-bold underline'>hello</div>}/>
     </Routes>
     </div>
   );
