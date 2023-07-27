@@ -1,13 +1,15 @@
 import './App.css';
 import { Routes,Route} from 'react-router-dom';
-import Button from '@mui/material/Button';
+import Login from './components/Login';
+import Register from './components/Register';
 
 
 
 function App() {
   return (
     <div className="App">
-    <Button variant="text">Text</Button>
+    <Login/>
+    <Register/>
     <Routes>
     <Route path='/' element={<div>hello</div>}/>
     </Routes>
