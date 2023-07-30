@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import CheckSign from "../TailwindComponents/CheckSign";
 
@@ -11,6 +11,7 @@ const Register = () => {
   const [lengthCheck, setLengthCheck] = useState(false);
   const [digitCheck, setDigitCheck] = useState(false);
   const [specialCharCheck, setSpecialCharCheck] = useState(false);
+  const [profilePic,setProfilePic] = useState(null);
 
   const {
     control,
@@ -26,7 +27,6 @@ const Register = () => {
     );
   };
 
-
   const onInputChange = (e) => {
     let { name, value } = e.target;
     setFormFields({ ...formFields, [name]: value });
@@ -34,29 +34,28 @@ const Register = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    console.log(profilePic);
   };
 
-  const userNameValidation = (value)=>{
+  const userNameValidation = (value) => {
     //api call
-    let userName = "123"
-    if(value === userName){
-      return `User name ${value} is not availaible`
+    let userName = "123";
+    if (value === userName) {
+      return `User name ${value} is not availaible`;
+    } else {
+      return true;
     }
-    else{
-      return true
-    }
-  }
+  };
 
-  const emailValidation=(value)=>{
+  const emailValidation = (value) => {
     // api call
-    let userEmail = "Super@gmail.com"
-    if(value === userEmail){
-      return "This email is already registered with us"
+    let userEmail = "Super@gmail.com";
+    if (value === userEmail) {
+      return "This email is already registered with us";
+    } else {
+      return true;
     }
-    else{
-      return true
-    }
-  }
+  };
 
   const passwordValidation = (value) => {
     const lengthRegex = /^.{8,20}$/;
@@ -66,36 +65,40 @@ const Register = () => {
     const specialCharRegex = /^(?=.*[@#$%^&+=()!])/;
 
     if (!uppercaseRegex.test(value)) {
-      setUpperCaseCheck(false)
+      setUpperCaseCheck(false);
     } else {
       setUpperCaseCheck(true);
     }
     if (!lengthRegex.test(value)) {
-      setLengthCheck(()=>false);
+      setLengthCheck(() => false);
     } else {
       setLengthCheck(true);
     }
     if (!lowercaseRegex.test(value)) {
-      setLowerCaseCheck(()=>false);
+      setLowerCaseCheck(() => false);
     } else {
       setLowerCaseCheck(true);
     }
     if (!digitRegex.test(value)) {
-      setDigitCheck(()=>false);
+      setDigitCheck(() => false);
     } else {
       setDigitCheck(true);
     }
     if (!specialCharRegex.test(value)) {
-      setSpecialCharCheck(()=>false);
+      setSpecialCharCheck(() => false);
     } else {
       setSpecialCharCheck(true);
     }
   };
 
-
   return (
     <div className="dark w-full sm:w-7/12 p-6 border-blue-800 border-2  rounded-md h-2/6">
-      <form onSubmit={handleSubmit(onSubmit)} action="#" method="post" autoComplete="off">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        action="#"
+        method="post"
+        autoComplete="off"
+      >
         <div className="relative z-0 w-full mb-6 group">
           <Controller
             name="name"
@@ -134,7 +137,7 @@ const Register = () => {
             control={control}
             rules={{
               required: "User name is required.",
-              validate:{userNameValidation}
+              validate: { userNameValidation },
             }}
             render={({ field, fieldState }) => (
               <input
@@ -161,7 +164,7 @@ const Register = () => {
           </label>
           {getFormErrorMessage("userName")}
         </div>
-      <div className="relative z-0 w-full mb-6 group">
+        <div className="relative z-0 w-full mb-6 group ">
           <Controller
             name="email"
             control={control}
@@ -172,7 +175,7 @@ const Register = () => {
                   /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
                 message: "Please enter a valid email",
               },
-              validate:{emailValidation}
+              validate: { emailValidation },
             }}
             render={({ field, fieldState }) => (
               <input
@@ -199,21 +202,38 @@ const Register = () => {
           </label>
           {getFormErrorMessage("email")}
         </div>
+        <div className="relative z-0 w-full mb-6 group h-12 overflow-hidden">
+        <input
+                type="file"
+                name="profilePic"
+                id="profilePic"
+                className="relative inset-0 opacity-0 w-full h-full cursor-pointer block px-0"
+                onChange={(e)=>{setProfilePic(e.target.files[0])}}
+              />
+          <label
+            htmlFor="profilePic"
+            className={`border-b-2 border-gray-500 w-screen pt-1 h-11 text-lg absolute top-1
+             ${profilePic?"dark:text-white":"dark:text-gray-400"}`}
+          >
+            {profilePic?profilePic.name:"Upload profile picture"}
+          </label>
+          {getFormErrorMessage("email")}
+        </div>
         <div className="relative z-0 w-full mb-6 group">
           <Controller
             name="password"
             control={control}
             rules={{
               required: "Password is required.",
-              validate:(value)=>{
-                const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()]).{8,20}$/;
-                if(passwordRegex.test(value)){
-                  return true
+              validate: (value) => {
+                const passwordRegex =
+                  /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()]).{8,20}$/;
+                if (passwordRegex.test(value)) {
+                  return true;
+                } else {
+                  return "Please choose a strong password.";
                 }
-                else{
-                  return "Please choose a strong password."
-                }
-              }
+              },
             }}
             render={({ field, fieldState }) => (
               <input
@@ -247,14 +267,13 @@ const Register = () => {
             control={control}
             rules={{
               required: "Confirm password is required.",
-              validate:(value)=>{
-                if(formFields.password === value ){
-                  return true
+              validate: (value) => {
+                if (formFields.password === value) {
+                  return true;
+                } else {
+                  return "Passwords do not match.";
                 }
-                else{
-                  return "Passwords do not match."
-                }
-              }
+              },
             }}
             render={({ field, fieldState }) => (
               <input
@@ -332,15 +351,42 @@ const Register = () => {
           Must contain a special character.
         </div>
         <div className="relative z-0 w-full mb-6 group flex justify-center">
-          <button type="submit" className="relative w-7/12 font-electric tracking-widest inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-lg font-medium text-gray-900 rounded-md background bg-gradient-to-r from-purple-500 to-pink-500 dark:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-500 ">
+          <button
+            type="submit"
+            className="relative w-7/12 font-electric tracking-widest inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-lg font-medium text-gray-900 rounded-md background bg-gradient-to-r from-purple-500 to-pink-500 dark:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-500 "
+          >
             <span className="relative w-full px-7 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded text-md text-center">
               Register
             </span>
           </button>
         </div>
       </form>
-      <button onClick={()=>navigate("/")}>login</button>
+      <button onClick={() => navigate("/")}>login</button>
     </div>
   );
 };
 export default Register;
+
+{
+  /* <div className="relative z-0 w-full mb-6 group  overflow-hidden">
+<Controller
+  name="profilePic"
+  control={control}
+  render={({ field, fieldState }) => (
+    <input
+      type="file"
+      name="profilePic"
+      id="profilePic"
+      value={formFields?.profilePic || ""}
+      className="relative text-lg px-0 py-0 right-[15%] w-[150%] text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray-400 dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 "
+      placeholder=" "
+      accept="image/jpeg, image/png, image/gif"
+      onChange={(e) => {
+        console.log(e)
+      }}
+    />
+  )}
+/>
+{getFormErrorMessage("profilePic")}
+</div> */
+}
