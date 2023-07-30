@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const { mailer } = require("../utils/nodemailer");
 const { verifyPassword } = require("../utils/matchPassword");
 const {generateToken} = require("../utils/generateJwt");
-const {checkSchema} = require('express-validator');
+const {responses} = require("../utils/responses");
 
 const registrationSchema = {
     userName: {
@@ -43,14 +43,14 @@ const registrationSchema = {
         custom: {
             options: (value, { req }) => {
                 return userCollectionModel
-                    .findOne({
-                        email: value,
-                    })
-                    .then((user) => {
-                        if (user) {
-                            return Promise.reject("Email address already taken");
-                        }
-                    });
+                .findOne({
+                    email: value,
+                })
+                .then((user) => {
+                    if (user) {
+                        return Promise.reject("Email address already taken");
+                    }
+                });
             },
         },
         errorMessage: "email cannot be empty",
@@ -58,9 +58,7 @@ const registrationSchema = {
 };
 
 // register new user after the validation check require {name,email,password,username}
-const registerUser = [
-    checkSchema(registrationSchema),
-    async (req, res) => {
+const registerUser = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -74,17 +72,38 @@ const registerUser = [
             ...user._doc,
             token:`Bearer ${generateToken(user._id)}`
         }
-        return res.send({
-            err: false,
-            result: user,
-        });
+        return responses.success(res,user,"Successfully registered");
     } catch (error) {
-        return res.send({
-            err: true,
-            sysError: error,
-        });
+        return responses.systemError(res,error);
     }
-}]
+};
+
+
+
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return responses.error(res,"email and password cannot be empty");
+        }
+        let user = await userCollectionModel.findOne({ email });
+        if (!user) {
+            return responses.error(res,"No such user found");
+        }
+        let verification =await verifyPassword(password, user.password);
+        if (verification === true) {
+            user = {
+                ...user._doc,
+                token:`Bearer ${generateToken(user._id)}`
+            }
+            return responses.success(res,user,"Login successfull");
+        } else {
+            return responses.error(res,"Invalid password");
+        }
+    } catch (error) {
+        return responses.systemError(res,error);
+    }
+};
 
 // this api is to be run after saving the user to verify their mail require {userId}
 const sendVerifyOtp = async (req, res) => {
@@ -99,16 +118,15 @@ const sendVerifyOtp = async (req, res) => {
             { new: true }
         );
         user = await user.save();
-        mailer(user.email, "Please verify your email", otp);
-        return res.send({
-            err: false,
-            result: user,
-        });
+        let info = await mailer(user.email, "Please verify your email", otp);
+        if(info && info.messageId){
+            return responses.success(res,user,"Email has been sent successfully.");
+        }
+        else{
+            return responses.error(res,"Email not sent.");
+        }
     } catch (error) {
-        return res.send({
-            err: true,
-            sysError: error,
-        });
+        return responses.systemError(res,error);
     }
 };
 
@@ -121,21 +139,12 @@ const verifyMail = async (req, res) => {
             user.otp = null;
             user.isVerified = true;
             user = await user.save();
-            return res.send({
-                err: false,
-                result: user,
-            });
+            return responses.success(res,user,"Email verification successfull");
         } else {
-            return res.send({
-                err: true,
-                msg: "Wrong One time password",
-            });
+            return responses.error(res,"Wrong One time password");
         }
     } catch (error) {
-        return res.send({
-            err: true,
-            sysError: error,
-        });
+        return responses.systemError(res,error);
     }
 };
 
@@ -146,35 +155,28 @@ const sendForgetPassOtp = async (req, res) => {
         const otp = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
         let user = await userCollectionModel.findOne({ email });
         if (!user) {
-            return res.send({
-                err: true,
-                msg: "This email is not registered with us",
-            });
+            return responses.error(res,"This email is not registered with us");
         }
         if (!user.isVerified) {
-            return res.send({
-                err: true,
-                msg: "Sorry but your email is not verified",
-            });
+            return responses.error(res,"Sorry but your email is not verified");
         }
         if (user && user.isVerified) {
             user.otp = otp;
             user = await user.save();
-            mailer(
+            let info = await mailer(
                 user.email,
                 "Please use the following otp for password resetting",
                 otp
             );
-            return res.send({
-                err: false,
-                result: user,
-            });
+            if(info && info.messageId){
+                return responses.success(res,user,"Email has been sent successfully");
+            }
+            else{
+                return responses.error(res,"Email not sent.");
+            }          
         }
     } catch (error) {
-        return res.send({
-            err: true,
-            sysError: error,
-        });
+        return responses.systemError(res,error);
     }
 };
 
@@ -183,79 +185,25 @@ const resetPassword = async (req, res) => {
     try {
         const { userId, otp, newPassword } = req.body;
         if (!userId || !otp || !newPassword) {
-            return res.send({
-                err: true,
-                msg: "userId, otp, password these fields can not be empty",
-            });
+            return responses.error(res,"userId, otp, password these fields can not be empty");
         }
         let user = await userCollectionModel.findById(userId);
         if (!user) {
-            return res.send({
-                err: true,
-                msg: "User not found",
-            });
+            return responses.error(res,"User not found");
         }
         if (user.otp === otp) {
             user.otp = null;
             user.password = newPassword;
             user = await user.save();
-            return res.send({
-                err: false,
-                result: user,
-            });
+            return responses.success(res,user,"Password has been changed successfully");
         } else {
-            return res.send({
-                err: true,
-                msg: "Invalid One time password",
-            });
+            return responses.error(res,"Invalid One time password");
         }
     } catch (error) {
-        return res.send({
-            err: true,
-            sysError: error,
-        });
+        return responses.systemError(res,error);
     }
 };
 
-const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            res.send({
-                err: true,
-                msg: "email and password cannot be empty",
-            });
-        }
-        let user = await userCollectionModel.findOne({ email });
-        if (!user) {
-            return res.send({
-                err: true,
-                msg: "No such user found",
-            });
-        }
-        let verification =await verifyPassword(password, user.password);
-        if (verification === true) {
-            user = {
-                ...user._doc,
-                token:`Bearer ${generateToken(user._id)}`
-            }
-            return res.send({
-                err: false,
-                result: user,
-            });
-        } else {
-            return res.send({
-                err: true,
-                msg: "Invalid password",
-            });
-        }
-    } catch (error) {
-        return res.send({
-            err: true,
-            sysError: error,
-        });
-    }
-};
 
 
 const fx = (req,res)=>{
@@ -264,6 +212,7 @@ const fx = (req,res)=>{
 
 module.exports = {
     registerUser,
+    registrationSchema,
     sendVerifyOtp,
     verifyMail,
     sendForgetPassOtp,

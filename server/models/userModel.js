@@ -30,6 +30,11 @@ const userModel = mongoose.Schema({
         type:String,
         trim:true,
         unique:true
+    },
+    profilePic:{
+        type:String,
+        trim:true,
+        default:"https://th.bing.com/th/id/R.a7ce18dec9affaf5ab51395ac967ae78?rik=KeA%2biXOYlZKFbg&riu=http%3a%2f%2fwww.agronomia.uanl.mx%2fwp-content%2fuploads%2f2016%2f11%2fno-avatar.png&ehk=Le2Uzebok%2bjRm66bAmlSxLPWb82km%2fNPwXQE4uvb5X0%3d&risl=&pid=ImgRaw&r=0&sres=1&sresct=1"
     }
 });
 
