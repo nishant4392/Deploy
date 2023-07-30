@@ -7,8 +7,6 @@ const Login = () => {
     control,
     formState: { errors },
     handleSubmit,
-    getValues,
-    reset,
   } = useForm();
 
   const getFormErrorMessage = (name) => {
@@ -28,8 +26,9 @@ const Login = () => {
     console.log(data);
   };
 
+
   return (
-    <div className="dark w-7/12 border-2 p-6">
+    <div className="dark w-full sm:w-7/12 p-6 border-blue-800 border-2  rounded-md h-2/6">
       <form onSubmit={handleSubmit(onSubmit)} action="#" method="post">
         <div className="relative z-0 w-full mb-6 group">
           <Controller
@@ -98,16 +97,16 @@ const Login = () => {
           </label>
           {getFormErrorMessage("password")}
         </div>
-        <button className="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-md font-medium text-gray-900 rounded-md background bg-gradient-to-r from-purple-500 to-pink-500 dark:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-500 ">
-          <span className="relative px-7 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded text-md">
-            Login
-          </span>
-        </button>
+        <div className="relative z-0 w-full mb-6 group flex justify-center">
+          <button type="submit" className="relative w-7/12 font-electric tracking-widest inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-lg font-medium text-gray-900 rounded-md background bg-gradient-to-r from-purple-500 to-pink-500 dark:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-500 ">
+            <span className="relative w-full px-7 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded text-md text-center">
+              Login
+            </span>
+          </button>
+        </div>
       </form>
     </div>
   );
 };
 
 export default Login;
-//button group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200       dark:hover:text-gray-900
-//span  group-hover:bg-opacity-0
