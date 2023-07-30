@@ -31,7 +31,7 @@ const Login = () => {
 
   return (
     <div className="dark w-full sm:w-7/12 p-6 border-blue-800 border-2  rounded-md h-2/6">
-      <form onSubmit={handleSubmit(onSubmit)} action="#" method="post">
+      <form onSubmit={handleSubmit(onSubmit)} action="#" method="post" autoComplete="off">
         <div className="relative z-0 w-full mb-6 group">
           <Controller
             name="email"
