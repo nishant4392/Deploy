@@ -112,6 +112,7 @@ const Register = () => {
                 className="text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 aria-autocomplete="none"
+                autoComplete="new-password"
                 onChange={(e) => {
                   onInputChange(e);
                   field.onChange(e.target.value);
@@ -144,6 +145,7 @@ const Register = () => {
                 className="text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 aria-autocomplete="none"
+                autoComplete="new-password"
                 onChange={(e) => {
                   onInputChange(e);
                   field.onChange(e.target.value.replace(/\s/g, ""));
@@ -181,6 +183,7 @@ const Register = () => {
                 className="text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 aria-autocomplete="none"
+                autoComplete="new-password"
                 onChange={(e) => {
                   onInputChange(e);
                   field.onChange(e.target.value);
@@ -221,6 +224,7 @@ const Register = () => {
                 className="text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 aria-autocomplete="none"
+                autoComplete="new-password"
                 onChange={(e) => {
                   passwordValidation(e.target.value);
                   onInputChange(e);
@@ -261,6 +265,7 @@ const Register = () => {
                 className="text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 aria-autocomplete="none"
+                autoComplete="new-password"
                 onChange={(e) => {
                   onInputChange(e);
                   field.onChange(e.target.value);
