@@ -1,15 +1,17 @@
 import React, { useState } from "react";
+import {useNavigate} from "react-router-dom"
 import { Controller, useForm } from "react-hook-form";
 import CheckSign from "../TailwindComponents/CheckSign";
 
 const Register = () => {
   const [formFields, setFormFields] = useState();
+  const navigate = useNavigate();
   const [upperCaseCheck, setUpperCaseCheck] = useState(false);
   const [lowerCaseCheck, setLowerCaseCheck] = useState(false);
   const [lengthCheck, setLengthCheck] = useState(false);
   const [digitCheck, setDigitCheck] = useState(false);
   const [specialCharCheck, setSpecialCharCheck] = useState(false);
-  
+
   const {
     control,
     formState: { errors },
@@ -332,6 +334,7 @@ const Register = () => {
           </button>
         </div>
       </form>
+      <button onClick={()=>navigate("/")}>login</button>
     </div>
   );
 };

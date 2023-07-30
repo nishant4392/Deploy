@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import {useNavigate} from "react-router-dom"
 
 const Login = () => {
   const [formFields, setFormFields] = useState();
+  const navigate = useNavigate();
   const {
     control,
     formState: { errors },
@@ -104,6 +106,7 @@ const Login = () => {
             </span>
           </button>
         </div>
+        <button onClick={()=>navigate("/register")}>register</button>
       </form>
     </div>
   );
