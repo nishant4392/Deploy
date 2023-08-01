@@ -37,6 +37,13 @@ const Register = () => {
     console.log(profilePic);
   };
 
+  const removeAutoComplete=()=>{
+    const inputs = document.getElementsByClassName("autoCompleteOff");
+    for(let i of inputs){
+      i.removeAttribute("autoComplete")
+    }
+  }
+
   const userNameValidation = (value) => {
     //api call
     let userName = "123";
@@ -91,12 +98,9 @@ const Register = () => {
     }
   };
 
-  useEffect(() => {
-    const inputs = document.getElementsByClassName("autoCompleteOff");
-    for(const i of inputs ){
-      i.removeAttribute("autoComplete")
-    }
-  }, []);
+  useEffect(()=>{
+    removeAutoComplete();
+  },[])
 
   return (
     <div className="dark w-full sm:w-7/12 p-6 border-blue-800 border-2  rounded-md h-2/6">
@@ -374,26 +378,3 @@ const Register = () => {
 };
 export default Register;
 
-{
-  /* <div className="relative z-0 w-full mb-6 group  overflow-hidden">
-<Controller
-  name="profilePic"
-  control={control}
-  render={({ field, fieldState }) => (
-    <input
-      type="file"
-      name="profilePic"
-      id="profilePic"
-      value={formFields?.profilePic || ""}
-      className="relative text-lg px-0 py-0 right-[15%] w-[150%] text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-gray-400 dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 "
-      placeholder=" "
-      accept="image/jpeg, image/png, image/gif"
-      onChange={(e) => {
-        console.log(e)
-      }}
-    />
-  )}
-/>
-{getFormErrorMessage("profilePic")}
-</div> */
-}
