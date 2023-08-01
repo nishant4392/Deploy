@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {useNavigate} from "react-router-dom"
+import Home from "./Home";
 
 const Login = () => {
   const [formFields, setFormFields] = useState();
@@ -120,7 +121,8 @@ const Login = () => {
             </span>
           </button>
         </div>
-        <button onClick={()=>navigate("/register")}>register</button>
+        <button className="mx-8" onClick={()=>navigate("/register")}>register</button>
+        <button onClick={()=>navigate("/navbar")}>Navbar Trial</button>
       </form>
     </div>
   );
