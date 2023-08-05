@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {useNavigate} from "react-router-dom"
-import Home from "./Home";
+import Home from "./DesktopNavbar";
 
 const Login = () => {
   const [formFields, setFormFields] = useState();
@@ -41,6 +41,7 @@ const Login = () => {
   })
 
   return (
+    <div className="min-h-screen flex justify-center items-center p-0">
     <div className="dark w-full sm:w-7/12 p-6 border-blue-800 border-2  rounded-md h-2/6">
       <form onSubmit={handleSubmit(onSubmit)} action="#" method="post" autoComplete="off">
         <div className="relative z-0 w-full mb-6 group">
@@ -125,6 +126,8 @@ const Login = () => {
         <button onClick={()=>navigate("/navbar")}>Navbar Trial</button>
       </form>
     </div>
+    </div>
+
   );
 };
 

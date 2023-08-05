@@ -1,17 +1,17 @@
 import { Routes,Route} from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register'; 
-import Home from './components/Home';
+import NavBar from './components/NavBar';
 
 
 
 function App() {
   return (
-    <div className="dark border-2 flex justify-center p-3 min-h-screen items-center overflow-hidden">
+    <div className="dark ">
     <Routes>
     <Route path='/' element={<Login/>}/>
     <Route path='/register' element={<Register/>}/>
-    <Route path='/navbar' element={<Home/>}/>
+    <Route path='/navbar' element={<NavBar/>}/>
     </Routes>
     </div>
   );
