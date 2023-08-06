@@ -11,6 +11,11 @@ const bookModel = mongoose.Schema({
         trim:true,
         required:true,
     },
+    prologue:{
+        type:String,
+        trim:true,
+        required:true,
+    },
     asin:{
         type:Number,
         required:true,

@@ -1,6 +1,5 @@
 const express = require("express");
-const {registerUser,registrationSchema, sendVerifyOtp, verifyMail, sendForgetPassOtp, resetPassword, loginUser, fx} = require("../controllers/userController");
-const {checkSchema} = require('express-validator');
+const {registerUser, sendVerifyOtp, verifyMail, sendForgetPassOtp, resetPassword, loginUser, fx} = require("../controllers/userController");
 const {protect} = require("../middlewares/authToken");
 
 

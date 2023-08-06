@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import CheckSign from "../TailwindComponents/CheckSign";
+import { UserServices } from "../Services/UserServices";
+import { State } from "../Context/stateProvider";
 
 const Register = () => {
+  const {setToast} = State();
+  const [loading,setLoading] = useState(false);
   const [formFields, setFormFields] = useState();
   const navigate = useNavigate();
   const [upperCaseCheck, setUpperCaseCheck] = useState(false);
@@ -32,9 +36,11 @@ const Register = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
-    console.log(profilePic);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    let result = await UserServices.register(data);
+    setToast({...result,display:true});
+    setLoading(false);
   };
 
   const removeAutoComplete = () => {
@@ -370,7 +376,7 @@ const Register = () => {
               className="relative w-7/12 font-electric tracking-widest inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-lg font-medium text-gray-900 rounded-md background bg-gradient-to-r from-purple-500 to-pink-500 dark:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-500 "
             >
               <span className="relative w-full px-7 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded text-md text-center">
-                Register
+                Register {loading?"...":""}
               </span>
             </button>
           </div>

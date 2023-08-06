@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {useNavigate} from "react-router-dom"
-import Home from "./DesktopNavbar";
+import {useNavigate} from "react-router-dom";
+import { UserServices } from "../Services/UserServices";
+import { State } from "../Context/stateProvider";
+
 
 const Login = () => {
+  const {setToast} = State();
   const [formFields, setFormFields] = useState();
+  const [loading,setLoading] = useState(false);
   const navigate = useNavigate();
   const {
     control,
@@ -25,8 +29,11 @@ const Login = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit =async (data) => {
+    setLoading(true);
+    let result =await UserServices.login(data);
+    setToast({...result,display:true});
+    setLoading(false);
   };
 
   const removeAutoComplete=()=>{
@@ -38,7 +45,8 @@ const Login = () => {
 
   useEffect(()=>{
     removeAutoComplete();
-  })
+    console.log(process.env.REACT_APP_API_PATH);
+  },[])
 
   return (
     <div className="min-h-screen flex justify-center items-center p-0">
@@ -118,7 +126,7 @@ const Login = () => {
         <div className="relative z-0 w-full mb-6 group flex justify-center">
           <button type="submit" className="relative w-7/12 font-electric tracking-widest inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-lg font-medium text-gray-900 rounded-md background bg-gradient-to-r from-purple-500 to-pink-500 dark:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-500 ">
             <span className="relative w-full px-7 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded text-md text-center">
-              Login
+              Login {loading?"...":""}
             </span>
           </button>
         </div>

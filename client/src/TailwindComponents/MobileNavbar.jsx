@@ -2,14 +2,14 @@ import React from "react";
 
 const MobileNavbar = () => {
   return (
-    <div className="border-2 border-blue-500 w-full h-20 flex justify-center items-center">
+    <div className="border-2 border-blue-500 w-full h-16 flex justify-center items-center">
     <div className="border-2 border-blue-500 w-24 h-full inline-flex">
     <button
         data-drawer-target="sidebar-multi-level-sidebar"
         data-drawer-toggle="sidebar-multi-level-sidebar"
         aria-controls="sidebar-multi-level-sidebar"
         type="button"
-        className="inline-flex items-center p-2 mt-2 ml-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-blue-500 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        className="inline-flex items-center p-2 mt-2 ml-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100  dark:text-blue-500 dark:hover:bg-gray-700 "
       >
         <span className="sr-only">Open sidebar</span>
         <svg
