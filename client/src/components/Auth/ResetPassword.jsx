@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
-import CheckSign from "../TailwindComponents/CheckSign";
-import { UserServices } from "../Services/UserServices";
-import { State } from "../Context/stateProvider";
+import CheckSign from "../../TailwindComponents/CheckSign";
+import { UserServices } from "../../Services/UserServices";
+import { State } from "../../Context/stateProvider";
 
-const Register = () => {
-  const {setToast} = State();
-  const [loading,setLoading] = useState(false);
+const ResetPassword = () => {
+  const { setToast} = State();
+  const [loading, setLoading] = useState(false);
+  const {userId} = useParams();
   const [formFields, setFormFields] = useState();
   const navigate = useNavigate();
   const [upperCaseCheck, setUpperCaseCheck] = useState(false);
@@ -15,7 +16,6 @@ const Register = () => {
   const [lengthCheck, setLengthCheck] = useState(false);
   const [digitCheck, setDigitCheck] = useState(false);
   const [specialCharCheck, setSpecialCharCheck] = useState(false);
-  const [profilePic, setProfilePic] = useState(null);
 
   const {
     control,
@@ -38,35 +38,19 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    let result = await UserServices.register(data);
+    let result = await UserServices.resetPassword({userId,...data});
     setToast({...result,display:true});
     setLoading(false);
+    if(result?.result){
+        navigate("/");
+    }
+
   };
 
   const removeAutoComplete = () => {
     const inputs = document.getElementsByClassName("autoCompleteOff");
     for (let i of inputs) {
       i.removeAttribute("autoComplete");
-    }
-  };
-
-  const userNameValidation = (value) => {
-    //api call
-    let userName = "123";
-    if (value === userName) {
-      return `User name ${value} is not availaible`;
-    } else {
-      return true;
-    }
-  };
-
-  const emailValidation = (value) => {
-    // api call
-    let userEmail = "Super@gmail.com";
-    if (value === userEmail) {
-      return "This email is already registered with us";
-    } else {
-      return true;
     }
   };
 
@@ -109,7 +93,7 @@ const Register = () => {
   }, []);
 
   return (
-    <div className="min-h-full flex justify-center items-center m-0 p-2">
+    <div className="min-h-screen flex justify-center items-center m-0 p-2">
       <div className="dark w-full sm:w-7/12 p-6 border-blue-800 border-2 rounded-md h-full ">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -119,17 +103,17 @@ const Register = () => {
         >
           <div className="relative z-0 w-full mb-6 group">
             <Controller
-              name="name"
+              name="otp"
               control={control}
               rules={{
-                required: "Name is required.",
+                required: "Otp is required."
               }}
               render={({ field, fieldState }) => (
                 <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  value={formFields?.name || ""}
+                  type="number"
+                  name="otp"
+                  id="otp"
+                  value={formFields?.otp || ""}
                   className=" autoCompleteOff text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
                   aria-autocomplete="none"
@@ -142,106 +126,16 @@ const Register = () => {
               )}
             />
             <label
-              htmlFor="name"
+              htmlFor="otp"
               className="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
             >
-              Name
+              One time Password
             </label>
-            {getFormErrorMessage("name")}
+            {getFormErrorMessage("otp")}
           </div>
           <div className="relative z-0 w-full mb-6 group">
             <Controller
-              name="userName"
-              control={control}
-              rules={{
-                required: "User name is required.",
-                validate: { userNameValidation },
-              }}
-              render={({ field, fieldState }) => (
-                <input
-                  type="text"
-                  name="userName"
-                  id="userName"
-                  value={formFields?.userName || ""}
-                  className=" autoCompleteOff text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  aria-autocomplete="none"
-                  autoComplete="new-password"
-                  onChange={(e) => {
-                    onInputChange(e);
-                    field.onChange(e.target.value.replace(/\s/g, ""));
-                  }}
-                />
-              )}
-            />
-            <label
-              htmlFor="userName"
-              className="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              User name
-            </label>
-            {getFormErrorMessage("userName")}
-          </div>
-          <div className="relative z-0 w-full mb-6 group ">
-            <Controller
-              name="email"
-              control={control}
-              rules={{
-                required: "Email is required.",
-                pattern: {
-                  value:
-                    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-                  message: "Please enter a valid email",
-                },
-                validate: { emailValidation },
-              }}
-              render={({ field, fieldState }) => (
-                <input
-                  type="text"
-                  name="email"
-                  id="email"
-                  value={formFields?.email || ""}
-                  className=" autoCompleteOff text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                  aria-autocomplete="none"
-                  autoComplete="new-password"
-                  onChange={(e) => {
-                    onInputChange(e);
-                    field.onChange(e.target.value);
-                  }}
-                />
-              )}
-            />
-            <label
-              htmlFor="email"
-              className="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Email address
-            </label>
-            {getFormErrorMessage("email")}
-          </div>
-          <div className="relative z-0 w-full mb-6 group h-12 overflow-hidden">
-            <input
-              type="file"
-              name="profilePic"
-              id="profilePic"
-              className="relative inset-0 opacity-0 w-full h-full cursor-pointer block px-0"
-              onChange={(e) => {
-                setProfilePic(e.target.files[0]);
-              }}
-            />
-            <label
-              htmlFor="profilePic"
-              className={`border-b-2 border-gray-500 w-screen pt-1 h-11 text-lg absolute top-1
-             ${profilePic ? "dark:text-white" : "dark:text-gray-400"}`}
-            >
-              {profilePic ? profilePic.name : "Upload profile picture"}
-            </label>
-            {getFormErrorMessage("email")}
-          </div>
-          <div className="relative z-0 w-full mb-6 group">
-            <Controller
-              name="password"
+              name="newPassword"
               control={control}
               rules={{
                 required: "Password is required.",
@@ -258,9 +152,9 @@ const Register = () => {
               render={({ field, fieldState }) => (
                 <input
                   type="text"
-                  name="password"
-                  id="password"
-                  value={formFields?.password || ""}
+                  name="newPassword"
+                  id="newPassword"
+                  value={formFields?.newPassword || ""}
                   className=" autoCompleteOff text-lg block py-2.5 px-0 w-full text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
                   aria-autocomplete="none"
@@ -274,10 +168,10 @@ const Register = () => {
               )}
             />
             <label
-              htmlFor="password"
+              htmlFor="newPassword"
               className="peer-focus:font-medium absolute text-lg text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
             >
-              Password
+              New Password
             </label>
             {getFormErrorMessage("password")}
           </div>
@@ -288,7 +182,7 @@ const Register = () => {
               rules={{
                 required: "Confirm password is required.",
                 validate: (value) => {
-                  if (formFields.password === value) {
+                  if (formFields.newPassword === value) {
                     return true;
                   } else {
                     return "Passwords do not match.";
@@ -376,14 +270,14 @@ const Register = () => {
               className="relative w-7/12 font-electric tracking-widest inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-lg font-medium text-gray-900 rounded-md background bg-gradient-to-r from-purple-500 to-pink-500 dark:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-500 "
             >
               <span className="relative w-full px-7 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded text-md text-center">
-                Register {loading?"...":""}
+                Reset Password {loading ? "..." : ""}
               </span>
             </button>
           </div>
         </form>
-        <button onClick={() => navigate("/")}>login</button>
+        <button className="text-blue-500" onClick={() => navigate("/")}>Login</button>
       </div>
     </div>
   );
 };
-export default Register;
+export default ResetPassword;

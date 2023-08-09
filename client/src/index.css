@@ -12,3 +12,11 @@
   font-family: Electric2;
   src: url("../src/fonts/Rebras/dafont101.com\ -\ Free\ Fonts\ Download.url") format("opentype");
 }
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
