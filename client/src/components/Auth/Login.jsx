@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {useNavigate} from "react-router-dom"
-import Home from "./Home";
+import {useNavigate} from "react-router-dom";
+import { UserServices } from "../../Services/UserServices";
+import { State } from "../../Context/stateProvider";
+import ForgotPasswordModal from "./ForgotPasswordModal";
+
 
 const Login = () => {
+  const {setToast,setUser} = State();
+  const [showModal,setShowModal] = useState(false);
   const [formFields, setFormFields] = useState();
+  const [loading,setLoading] = useState(false);
   const navigate = useNavigate();
   const {
     control,
@@ -25,8 +31,14 @@ const Login = () => {
     setFormFields({ ...formFields, [name]: value });
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit =async (data) => {
+    setLoading(true);
+    let result =await UserServices.login(data);
+    setLoading(false);
+    setToast({...result,display:true});
+    if(result?.result){
+      setUser(result.result);
+    }
   };
 
   const removeAutoComplete=()=>{
@@ -38,11 +50,16 @@ const Login = () => {
 
   useEffect(()=>{
     removeAutoComplete();
-  })
+  },[]);
+
+  const closeModal =()=>{
+    setShowModal(false);
+  }
 
   return (
+    <div className="min-h-screen flex justify-center items-center p-0">
     <div className="dark w-full sm:w-7/12 p-6 border-blue-800 border-2  rounded-md h-2/6">
-      <form onSubmit={handleSubmit(onSubmit)} action="#" method="post" autoComplete="off">
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         <div className="relative z-0 w-full mb-6 group">
           <Controller
             name="email"
@@ -117,14 +134,20 @@ const Login = () => {
         <div className="relative z-0 w-full mb-6 group flex justify-center">
           <button type="submit" className="relative w-7/12 font-electric tracking-widest inline-flex items-center justify-center p-0.5 mb-2 mr-2 mt-2 overflow-hidden text-lg font-medium text-gray-900 rounded-md background bg-gradient-to-r from-purple-500 to-pink-500 dark:text-white hover:bg-gradient-to-r hover:from-green-500 hover:to-green-500 ">
             <span className="relative w-full px-7 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded text-md text-center">
-              Login
+              Login {loading?"...":""}
             </span>
           </button>
         </div>
-        <button className="mx-8" onClick={()=>navigate("/register")}>register</button>
-        <button onClick={()=>navigate("/navbar")}>Navbar Trial</button>
+        <div className="relative z-0 w-full mb-6 flex flex-col items-center md:flex md:flex-row md:items-center md:justify-between text-blue-500">
+        <div className="relative z-0  my-1 md:my-0 cursor-pointer" onClick={()=>navigate("/register")}>Register</div>
+        {/* <button className="relative z-0 my-1 md:my-0" onClick={()=>navigate("/navbar")}>Navbar Trial</button> */}
+        <div className="relative z-0 my-1 md:my-0 cursor-pointer" onClick={()=>{setShowModal(true)}}>Forgot Password</div>
+        </div>
       </form>
+      <ForgotPasswordModal show={showModal} closeModal={closeModal}/>
     </div>
+    </div>
+
   );
 };
 

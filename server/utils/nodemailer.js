@@ -19,7 +19,7 @@ try {
   });
   return info;
 } catch (error) {
-  console.log(error);
+  return error;
 }
 };
 
