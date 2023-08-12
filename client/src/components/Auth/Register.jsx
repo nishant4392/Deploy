@@ -395,7 +395,7 @@ const Register = () => {
             </button>
           </div>
         </form>
-        <button onClick={() => navigate("/")}>login</button>
+        <button onClick={() => navigate("/navbar")}>login</button>
       </div>
       <OtpModal show={showModal} closeModal={closeModal}/>
     </div>

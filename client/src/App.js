@@ -2,19 +2,20 @@ import { Routes,Route} from 'react-router-dom';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register'; 
 import NavBar from './components/NavBar';
-import { useEffect} from 'react';
-import {initFlowbite} from "flowbite"
 import Toast from './TailwindComponents/Toast';
 import { State } from './Context/stateProvider';
 import ResetPassword from './components/Auth/ResetPassword';
+import { initFlowbite } from 'flowbite';
+import { useEffect } from 'react';
 
 
 function App() {
-  const {toast} = State();
-
+  
   useEffect(()=>{
     initFlowbite();
-  },[]);
+  },[])
+  const {toast} = State();
+
 
   return (
     <div className="dark ">

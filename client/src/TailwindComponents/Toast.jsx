@@ -1,4 +1,3 @@
-import { initFlowbite } from "flowbite";
 import React, { useEffect, useState } from "react";
 
 const Toast = (props) => {
@@ -6,7 +5,6 @@ const Toast = (props) => {
   const [display, setDisplay] = useState();
 
   useEffect(() => {
-    initFlowbite();
     setDisplay(props.toast.display);
     setTimeout(() => {
       setDisplay(false);
