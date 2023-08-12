@@ -43,14 +43,14 @@ const registrationSchema = {
         custom: {
             options: (value, { req }) => {
                 return userCollectionModel
-                    .findOne({
-                        email: value,
-                    })
-                    .then((user) => {
-                        if (user) {
-                            return Promise.reject("Email address already taken");
-                        }
-                    });
+                .findOne({
+                    email: value,
+                })
+                .then((user) => {
+                    if (user) {
+                        return Promise.reject("Email address already taken");
+                    }
+                });
             },
         },
         errorMessage: "email cannot be empty",
@@ -72,7 +72,34 @@ const registerUser = async (req, res) => {
             ...user._doc,
             token:`Bearer ${generateToken(user._id)}`
         }
-        return responses.success(res,user);
+        return responses.success(res,user,"Successfully registered");
+    } catch (error) {
+        return responses.systemError(res,error);
+    }
+};
+
+
+
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return responses.error(res,"email and password cannot be empty");
+        }
+        let user = await userCollectionModel.findOne({ email });
+        if (!user) {
+            return responses.error(res,"No such user found");
+        }
+        let verification =await verifyPassword(password, user.password);
+        if (verification === true) {
+            user = {
+                ...user._doc,
+                token:`Bearer ${generateToken(user._id)}`
+            }
+            return responses.success(res,user,"Login successfull");
+        } else {
+            return responses.error(res,"Invalid password");
+        }
     } catch (error) {
         return responses.systemError(res,error);
     }
@@ -91,8 +118,13 @@ const sendVerifyOtp = async (req, res) => {
             { new: true }
         );
         user = await user.save();
-        mailer(user.email, "Please verify your email", otp);
-        return responses.success(res,user);
+        let info = await mailer(user.email, "Please verify your email", otp);
+        if(info && info.messageId){
+            return responses.success(res,user,"Email has been sent successfully.");
+        }
+        else{
+            return responses.error(res,"Email not sent.");
+        }
     } catch (error) {
         return responses.systemError(res,error);
     }
@@ -107,7 +139,7 @@ const verifyMail = async (req, res) => {
             user.otp = null;
             user.isVerified = true;
             user = await user.save();
-            return responses.success(res,user);
+            return responses.success(res,user,"Email verification successfull");
         } else {
             return responses.error(res,"Wrong One time password");
         }
@@ -131,12 +163,17 @@ const sendForgetPassOtp = async (req, res) => {
         if (user && user.isVerified) {
             user.otp = otp;
             user = await user.save();
-            mailer(
+            let info = await mailer(
                 user.email,
                 "Please use the following otp for password resetting",
                 otp
             );
-            return responses.success(res,user);
+            if(info && info.messageId){
+                return responses.success(res,user,"Email has been sent successfully");
+            }
+            else{
+                return responses.error(res,"Email not sent.");
+            }          
         }
     } catch (error) {
         return responses.systemError(res,error);
@@ -158,7 +195,7 @@ const resetPassword = async (req, res) => {
             user.otp = null;
             user.password = newPassword;
             user = await user.save();
-            return responses.success(res,user);
+            return responses.success(res,user,"Password has been changed successfully");
         } else {
             return responses.error(res,"Invalid One time password");
         }
@@ -167,30 +204,6 @@ const resetPassword = async (req, res) => {
     }
 };
 
-const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return responses.error(res,"email and password cannot be empty");
-        }
-        let user = await userCollectionModel.findOne({ email });
-        if (!user) {
-            return responses.error(res,"No such user found");
-        }
-        let verification =await verifyPassword(password, user.password);
-        if (verification === true) {
-            user = {
-                ...user._doc,
-                token:`Bearer ${generateToken(user._id)}`
-            }
-            return responses.success(res,user);
-        } else {
-            return responses.error(res,"Invalid password");
-        }
-    } catch (error) {
-        return responses.systemError(res,error);
-    }
-};
 
 
 const fx = (req,res)=>{

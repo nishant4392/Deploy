@@ -22,8 +22,7 @@ const bookModel = mongoose.Schema({
         default:"No prologue availaible."
     },
     asin:{
-        type:String,
-        trim:true,
+        type:Number,
         required:true,
         unique:true
     },

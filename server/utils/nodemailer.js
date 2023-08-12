@@ -17,6 +17,7 @@ try {
     subject: `${subject}`,
     text: `Following is your otp ${otp}`,
   });
+  return info;
 } catch (error) {
   console.log(error);
 }
